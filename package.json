@@ -1,5 +1,5 @@
 {
-  "name": "mdx-loader",
+  "name": "ryokkkke-mdx-loader",
   "version": "3.0.2",
   "main": "index.js",
   "keywords": [
@@ -35,8 +35,5 @@
     "typographic-en-dashes": "^1.0.1",
     "typographic-quotes": "^1.2.1",
     "unist-util-visit": "^1.4.0"
-  },
-  "repository": {
-    "url": "https://github.com/frontarm/mdx-util"
   }
 }
