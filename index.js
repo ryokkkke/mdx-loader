@@ -25,8 +25,8 @@ module.exports = async function (source) {
         breaks,
         [textr, { plugins: [typography] }],
       ],
-      rehypePlugins: [rehypePrism],
-      compilers: [
+      rehypePlugins: [
+        rehypePrism,
         mdxTableOfContents,
         mdxExportJSONByDefault("frontMatter", data),
       ],
