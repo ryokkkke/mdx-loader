@@ -95,10 +95,10 @@ module.exports = () => (astTree) => {
   if (children == undefined) return;
   if (children.length === 0) return;
 
-  console.log(astTree);
+  // console.log(astTree);
   const treeinfo = scanAstTree(astTree);
-  console.log(treeinfo);
-  console.log(treeinfo.hasTableOfContentsExport);
+  // console.log(treeinfo);
+  // console.log(treeinfo.hasTableOfContentsExport);
   if (treeinfo.hasTableOfContentsExport) return astTree;
 
   const tableOfContentsExportNode = {
@@ -107,6 +107,6 @@ module.exports = () => (astTree) => {
   };
 
   astTree.children = children.concat([tableOfContentsExportNode]);
-  console.log(astTree.children);
+  // console.log(astTree.children);
   return astTree;
 };
