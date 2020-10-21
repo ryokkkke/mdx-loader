@@ -9,21 +9,22 @@ const toFragment = (nodes) => {
 };
 
 // Markdownなので、第一階層にしか見出し要素が無い前提
-const scanAstTree = (root) => {
-  return root.children.map((node) => {
-    if (node.type !== "element") return;
-    if (!/^h\d$/.test(node.tagName)) return;
+const scanAstTree = (root) =>
+  root.children
+    .map((node) => {
+      if (node.type !== "element") return;
+      if (!/^h\d$/.test(node.tagName)) return;
 
-    const id = node.properties.id;
-    const level = parseInt(node.tagName[1]);
+      const id = node.properties.id;
+      const level = parseInt(node.tagName[1]);
 
-    return {
-      id,
-      level,
-      title: toFragment(node.children),
-    };
-  });
-};
+      return {
+        id,
+        level,
+        title: toFragment(node.children),
+      };
+    })
+    .filter((headerInfo) => headerInfo !== undefined);
 
 const codeifyTreeInfoItem = (info) =>
   `{ id: ${JSON.stringify(info.id)}, level: ${info.level}, title: ${
