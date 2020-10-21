@@ -6,7 +6,7 @@ const textr = require("remark-textr");
 const slug = require("remark-slug");
 const breaks = require("remark-breaks");
 const mdx = require("@mdx-js/mdx");
-const mdxTableOfContents = require("mdx-table-of-contents");
+const mdxTableOfContents = require("./table-of-contents");
 const mdxExportJSONByDefault = require("mdx-constant");
 const grayMatter = require("gray-matter");
 const typography = require("./typography");
@@ -25,11 +25,8 @@ module.exports = async function (source) {
         breaks,
         [textr, { plugins: [typography] }],
       ],
-      rehypePlugins: [
-        rehypePrism,
-        mdxTableOfContents,
-        mdxExportJSONByDefault("frontMatter", data),
-      ],
+      rehypePlugins: [rehypePrism, mdxTableOfContents],
+      compilers: [mdxExportJSONByDefault("frontMatter", data)],
     },
     getOptions(this),
     { filepath: this.resourcePath }
