@@ -98,6 +98,7 @@ module.exports = () => (astTree) => {
   console.log(astTree);
   const treeinfo = scanAstTree(astTree);
   console.log(treeinfo);
+  console.log(treeinfo.hasTableOfContentsExport);
   if (treeinfo.hasTableOfContentsExport) return astTree;
 
   const tableOfContentsExportNode = {
