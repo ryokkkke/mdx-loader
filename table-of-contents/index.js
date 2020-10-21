@@ -74,9 +74,14 @@ module.exports = () => (astTree) => {
   if (children == undefined) return;
   if (children.length === 0) return;
 
+  console.log(astTree);
   const treeinfo = scanAstTree(astTree);
   console.log(treeinfo);
   if (treeinfo.hasTableOfContentsExport) return astTree;
+
+  // const tableOfContentsExportNode = {
+  //   type: "export",
+  // };
 
   astTree.children = children.concat([treeinfo.tableOfContents]);
   return astTree;
