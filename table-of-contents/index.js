@@ -36,7 +36,7 @@ const codelifyTreeInfo = (tableOfContents) => {
     .map(codeifyTreeInfoItem)
     .join(",");
 
-  return `export const tableOfContents = (components={}) => [${tableOfContentsCodes}];`;
+  return `export const tableOfContents = [${tableOfContentsCodes}];`;
 };
 
 // for an item options.rehypePlugins of mdx function of @mdx-js/mdx
