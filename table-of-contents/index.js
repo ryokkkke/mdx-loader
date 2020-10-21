@@ -1,11 +1,21 @@
 const toJSX = require("@mdx-js/mdx/mdx-hast-to-jsx").toJSX;
 
-module.exports = (astTree) => {
+module.exports = () => (astTree) => {
   console.log(astTree);
+  if (astTree == undefined) {
+    console.error("astTree is undefined");
+    return;
+  }
 
   const children = astTree.children;
-  if (children == undefined) return;
-  if (children.length === 0) return;
+  if (children == undefined) {
+    console.error("children is undefined");
+    return;
+  }
+  if (children.length === 0) {
+    console.error("children is empty");
+    return;
+  }
 
   astTree.children = children.concat([
     /* info.tableOfContents */
