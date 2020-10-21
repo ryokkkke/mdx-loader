@@ -68,6 +68,27 @@ function scanAstTree(
   return info;
 }
 
+const codeifyTreeInfoItem = (info) => {
+  const children = (() => {
+    if (info.children == undefined) return "";
+    if (info.children.length === 0) return "";
+
+    return info.children.map(codeifyTreeInfoItem).join(",");
+  })();
+
+  return `{ id: ${JSON.stringify(info.id)}, level: ${info.level}, title: ${
+    info.title
+  }, children: [${children}] }`;
+};
+
+const codelifyTreeInfo = (tableOfContents) => {
+  const tableOfContentsCodes = tableOfContents
+    .map(codeifyTreeInfoItem)
+    .join(",");
+
+  return `[${tableOfContentsCodes}]`;
+};
+
 // for an item options.rehypePlugins of mdx function of @mdx-js/mdx
 module.exports = () => (astTree) => {
   const children = astTree.children;
@@ -79,10 +100,11 @@ module.exports = () => (astTree) => {
   console.log(treeinfo);
   if (treeinfo.hasTableOfContentsExport) return astTree;
 
-  // const tableOfContentsExportNode = {
-  //   type: "export",
-  // };
+  const tableOfContentsExportNode = {
+    type: "export",
+    value: codelifyTreeInfo(treeinfo.tableOfContents),
+  };
 
-  astTree.children = children.concat([treeinfo.tableOfContents]);
+  astTree.children = children.concat([tableOfContentsExportNode]);
   return astTree;
 };
