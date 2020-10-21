@@ -106,5 +106,6 @@ module.exports = () => (astTree) => {
   };
 
   astTree.children = children.concat([tableOfContentsExportNode]);
+  console.log(astTree.children);
   return astTree;
 };
