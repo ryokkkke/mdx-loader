@@ -36,7 +36,7 @@ function scanAstTree(
     // whether node has "export const tableOfContents" or not
     if (
       node.type === "export" &&
-      node.value.indexOf("tableOfContents") !== -1
+      node.value.indexOf("export const tableOfContents =") !== -1
     ) {
       info.hasTableOfContentsExport = true;
     }
@@ -107,6 +107,6 @@ module.exports = () => (astTree) => {
   };
 
   astTree.children = children.concat([tableOfContentsExportNode]);
-  // console.log(astTree.children);
+  console.log(astTree.children);
   return astTree;
 };
