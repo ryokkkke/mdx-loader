@@ -1,85 +1,34 @@
 const toJSX = require("@mdx-js/mdx/mdx-hast-to-jsx").toJSX;
 
-function toFragment(nodes) {
+const toFragment = (nodes) => {
   if (nodes.length === 1 && nodes[0].type === "text") {
     return JSON.stringify(nodes[0].value);
   } else {
     return "<React.Fragment>" + nodes.map(toJSX).join("") + "</React.Fragment>";
   }
-}
+};
 
-const tableOfContentsListSerializer = (nodes) =>
-  nodes.map((node) => tableOfContentsNodeSerializer(node));
-
-function tableOfContentsNodeSerializer(node) {
-  return {
-    id: JSON.stringify(node.id),
-    level: node.level,
-    title: node.title,
-    children: tableOfContentsListSerializer(node.children),
-  };
-}
-
-function scanAstTree(
-  root,
-  { minTableOfContentsLevel = 1, maxTableOfContentsLevel = 3 } = {}
-) {
-  const info = {
-    hasTableOfContentsExport: false,
-    tableOfContents: [],
-  };
-
-  const levelIds = [];
-  const tableOfContentsIds = {};
-
-  root.children.forEach((node) => {
-    // whether node has "export const tableOfContents" or not
-    if (
-      node.type === "export" &&
-      node.value.indexOf("export const tableOfContents =") !== -1
-    ) {
-      info.hasTableOfContentsExport = true;
-    }
-
+// Markdownなので、第一階層にしか見出し要素が無い前提
+const scanAstTree = (root) => {
+  return root.children.map((node) => {
     if (node.type !== "element") return;
     if (!/^h\d$/.test(node.tagName)) return;
 
-    const level = parseInt(node.tagName[1]);
-    if (level < minTableOfContentsLevel) return;
-    if (level > maxTableOfContentsLevel) return;
-
     const id = node.properties.id;
-    levelIds[level - 1] = id;
-    const parent = tableOfContentsIds[levelIds[level - 2]];
-    const item = {
+    const level = parseInt(node.tagName[1]);
+
+    return {
       id,
       level,
       title: toFragment(node.children),
-      children: [],
     };
-    if (parent) {
-      parent.children.push(item);
-    } else {
-      info.tableOfContents.push(item);
-    }
-    tableOfContentsIds[id] = item;
   });
-
-  return info;
-}
-
-const codeifyTreeInfoItem = (info) => {
-  const children = (() => {
-    if (info.children == undefined) return "";
-    if (info.children.length === 0) return "";
-
-    return info.children.map(codeifyTreeInfoItem).join(",");
-  })();
-
-  return `{ id: ${JSON.stringify(info.id)}, level: ${info.level}, title: ${
-    info.title
-  }, children: [${children}] }`;
 };
+
+const codeifyTreeInfoItem = (info) =>
+  `{ id: ${JSON.stringify(info.id)}, level: ${info.level}, title: ${
+    info.title
+  } }`;
 
 const codelifyTreeInfo = (tableOfContents) => {
   const tableOfContentsCodes = tableOfContents
@@ -95,12 +44,10 @@ module.exports = () => (astTree) => {
   if (children == undefined) return;
   if (children.length === 0) return;
 
-  const treeinfo = scanAstTree(astTree);
-  if (treeinfo.hasTableOfContentsExport) return astTree;
-
+  const tableOfContents = scanAstTree(astTree);
   const tableOfContentsExportNode = {
     type: "export",
-    value: codelifyTreeInfo(treeinfo.tableOfContents),
+    value: codelifyTreeInfo(tableOfContents),
   };
   astTree.children = children.concat([tableOfContentsExportNode]);
   return astTree;
