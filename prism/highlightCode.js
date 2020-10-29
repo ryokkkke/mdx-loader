@@ -3,42 +3,42 @@ Code used under license from Gatsby
 https://github.com/gatsbyjs/gatsby/blob/master/packages/gatsby-remark-prismjs/src/
 */
 
-const Prism = require(`prismjs`)
-const _ = require(`lodash`)
+const Prism = require(`prismjs`);
+const escape = require("lodash.escape");
 
-const loadPrismLanguage = require(`./loadPrismLanguage`)
-const highlightLines = require(`./highlightLines`)
+const loadPrismLanguage = require(`./loadPrismLanguage`);
+const highlightLines = require(`./highlightLines`);
 
 module.exports = (language, code, lineNumbersHighlight = []) => {
   // (Try to) load languages on demand.
   if (!Prism.languages[language]) {
     try {
-      loadPrismLanguage(language)
+      loadPrismLanguage(language);
     } catch (e) {
       // Language wasn't loaded so let's bail.
       if (language === `none`) {
-        return code // Don't escape if set to none.
+        return code; // Don't escape if set to none.
       } else {
-        return _.escape(code)
+        return escape(code);
       }
     }
   }
 
-  const grammar = Prism.languages[language]
+  const grammar = Prism.languages[language];
 
-  const highlightedCode = Prism.highlight(code, grammar, language)
-  const codeSplits = highlightLines(highlightedCode, lineNumbersHighlight)
+  const highlightedCode = Prism.highlight(code, grammar, language);
+  const codeSplits = highlightLines(highlightedCode, lineNumbersHighlight);
 
-  let finalCode = ``
+  let finalCode = ``;
 
-  const lastIdx = codeSplits.length - 1
+  const lastIdx = codeSplits.length - 1;
   // Don't add back the new line character after highlighted lines
   // as they need to be display: block and full-width.
   codeSplits.forEach((split, idx) => {
     split.highlight
       ? (finalCode += split.code)
-      : (finalCode += `${split.code}${idx == lastIdx ? `` : `\n`}`)
-  })
+      : (finalCode += `${split.code}${idx == lastIdx ? `` : `\n`}`);
+  });
 
-  return finalCode
-}
+  return finalCode;
+};
