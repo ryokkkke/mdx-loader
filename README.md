@@ -7,6 +7,41 @@ Features I appended are...
 - default remark-break
 - different table of contents implementation
 
+# Usage on Next.js
+
+```json
+// package.json
+{
+  "devDependencies": {
+    "ryokkkke-mdx-loader": "git+ssh://git@github.com/ryokkkke/mdx-loader.git"
+  }
+}
+```
+
+```console
+$ npm install ryokkkke-mdx-loader
+```
+
+```js
+// next.config.js
+module.exports = {
+  pageExtensions: ["tsx", "mdx"],
+  webpack(config, options) {
+    config.module.rules.push({
+      test: /\.mdx$/,
+      use: [
+        options.defaultLoaders.babel,
+        {
+          loader: "ryokkkke-mdx-loader",
+        },
+      ],
+    });
+
+    return config;
+  },
+};
+```
+
 # Original README
 
 [![npm version](https://img.shields.io/npm/v/mdx-loader.svg)](https://www.npmjs.com/package/mdx-loader)
